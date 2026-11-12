@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Invertierungs- / Not-True Helfer erstellen",
+        "description": "Erstellt einen Binärsensor, der den umgekehrten Zustand einer Ziel-Entität spiegelt (schaltet EIN wenn die Ziel-Entität AUS ist, und AUS wenn sie EIN ist).",
+        "data": {
+          "name": "Name",
+          "source_entity": "Ziel-Entität",
+          "device_class": "Geräteklasse",
+          "icon": "Icon (optional)"
+        }
+      }
+    },
+    "error": {
+      "empty_source": "Bitte wähle eine Ziel-Entität zum Invertieren aus.",
+      "empty_name": "Bitte gib einen Namen an."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Invertierungs-Helfer bearbeiten",
+        "description": "Passe die Ziel-Entität oder das Erscheinungsbild dieses Invertierungs-Helfers an.",
+        "data": {
+          "source_entity": "Ziel-Entität",
+          "device_class": "Geräteklasse",
+          "icon": "Icon (optional)"
+        }
+      }
+    },
+    "error": {
+      "empty_source": "Bitte wähle eine Ziel-Entität zum Invertieren aus."
+    }
+  }
+}

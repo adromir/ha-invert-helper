@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Create Invert / Not-True Helper",
+        "description": "Create a binary sensor that reflects the inverted state of any target entity (turns ON when target is OFF, and OFF when target is ON).",
+        "data": {
+          "name": "Name",
+          "source_entity": "Target Entity",
+          "device_class": "Device Class",
+          "icon": "Icon (optional)"
+        }
+      }
+    },
+    "error": {
+      "empty_source": "Please select a target entity to invert.",
+      "empty_name": "Please provide a name."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Invert Helper",
+        "description": "Adjust the target entity or appearance of this invert helper.",
+        "data": {
+          "source_entity": "Target Entity",
+          "device_class": "Device Class",
+          "icon": "Icon (optional)"
+        }
+      }
+    },
+    "error": {
+      "empty_source": "Please select a target entity to invert."
+    }
+  }
+}

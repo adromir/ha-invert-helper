@@ -1,0 +1,11 @@
+{
+  "domain": "invert_helper",
+  "name": "Invert / Not-True Helper",
+  "codeowners": ["@adromir"],
+  "config_flow": true,
+  "documentation": "https://github.com/adromir/ha-invert-helper",
+  "issue_tracker": "https://github.com/adromir/ha-invert-helper/issues",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "version": "1.0.0"
+}
