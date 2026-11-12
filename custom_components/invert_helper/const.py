@@ -62,3 +62,4 @@ SUPPORTED_DEVICE_CLASSES = [
     "vibration",
     "window",
 ]
+

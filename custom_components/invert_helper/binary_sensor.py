@@ -170,3 +170,4 @@ class InvertBinarySensor(BinarySensorEntity):
         else:
             # Default fallback to state inequality
             self._attr_is_on = state_clean != self._target_value.strip().lower()
+
