@@ -3,34 +3,56 @@
     "step": {
       "user": {
         "title": "Invertierungs- / Not-True Helfer erstellen",
-        "description": "Erstellt einen Binärsensor, der den umgekehrten Zustand einer Ziel-Entität spiegelt (schaltet EIN wenn die Ziel-Entität AUS ist, und AUS wenn sie EIN ist).",
+        "description": "Erstellt einen Binärsensor-Helfer, der prüft, ob ein Zustand oder Zahlenwert NICHT gleich einem Zielwert ist, oder einen Boolean invertiert.",
         "data": {
           "name": "Name",
           "source_entity": "Ziel-Entität",
+          "mode": "Vergleichsmodus",
+          "target_value": "Vergleichswert(e)",
           "device_class": "Geräteklasse",
           "icon": "Icon (optional)"
+        },
+        "data_description": {
+          "target_value": "Für 'Zustand ist NICHT gleich' oder 'Zahl ist NICHT gleich' gib einen einzelnen Wert ein (z. B. 0, disarmed, home). Für 'Zustand ist in KEINEM der Werte' trenne Werte per Komma (z. B. home, work)."
         }
       }
     },
     "error": {
-      "empty_source": "Bitte wähle eine Ziel-Entität zum Invertieren aus.",
-      "empty_name": "Bitte gib einen Namen an."
+      "empty_source": "Bitte wähle eine Ziel-Entität aus.",
+      "empty_name": "Bitte gib einen Namen an.",
+      "empty_target_value": "Bitte gib einen Vergleichswert für diesen Modus an."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Invertierungs-Helfer bearbeiten",
-        "description": "Passe die Ziel-Entität oder das Erscheinungsbild dieses Invertierungs-Helfers an.",
+        "title": "Invertierungs- / Not-True Helfer bearbeiten",
+        "description": "Passe Vergleichseinstellungen, Zielwerte oder das Erscheinungsbild an.",
         "data": {
           "source_entity": "Ziel-Entität",
+          "mode": "Vergleichsmodus",
+          "target_value": "Vergleichswert(e)",
           "device_class": "Geräteklasse",
           "icon": "Icon (optional)"
+        },
+        "data_description": {
+          "target_value": "Für 'Zustand ist NICHT gleich' oder 'Zahl ist NICHT gleich' gib einen einzelnen Wert ein (z. B. 0, disarmed, home). Für 'Zustand ist in KEINEM der Werte' trenne Werte per Komma (z. B. home, work)."
         }
       }
     },
     "error": {
-      "empty_source": "Bitte wähle eine Ziel-Entität zum Invertieren aus."
+      "empty_source": "Bitte wähle eine Ziel-Entität aus.",
+      "empty_target_value": "Bitte gib einen Vergleichswert für diesen Modus an."
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "state_not_equal": "Zustand ist NICHT gleich [Wert]",
+        "numeric_not_equal": "Zahl ist NICHT gleich [Wert]",
+        "state_not_in": "Zustand ist in KEINEM der Werte [Kommagetrennt]",
+        "invert_boolean": "Boolean / Binärwert umkehren"
+      }
     }
   }
 }

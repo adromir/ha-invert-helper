@@ -14,10 +14,17 @@ from homeassistant.helpers import selector
 from .const import (
     DOMAIN,
     CONF_SOURCE_ENTITY,
+    CONF_MODE,
+    CONF_TARGET_VALUE,
     CONF_DEVICE_CLASS,
     CONF_ICON,
     DEFAULT_NAME,
     DEVICE_CLASS_NONE,
+    MODE_STATE_NOT_EQUAL,
+    MODE_NUMERIC_NOT_EQUAL,
+    MODE_STATE_NOT_IN,
+    MODE_INVERT_BOOLEAN,
+    MODES,
     SUPPORTED_DEVICE_CLASSES,
 )
 
@@ -38,11 +45,15 @@ class InvertHelperConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             source_entity = user_input.get(CONF_SOURCE_ENTITY)
             name = user_input.get(CONF_NAME, "").strip()
+            mode = user_input.get(CONF_MODE, MODE_STATE_NOT_EQUAL)
+            target_value = user_input.get(CONF_TARGET_VALUE, "").strip()
 
             if not source_entity:
                 errors[CONF_SOURCE_ENTITY] = "empty_source"
             if not name:
                 errors[CONF_NAME] = "empty_name"
+            if mode != MODE_INVERT_BOOLEAN and not target_value:
+                errors[CONF_TARGET_VALUE] = "empty_target_value"
 
             if not errors:
                 return self.async_create_entry(
@@ -57,6 +68,22 @@ class InvertHelperConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
                 vol.Required(CONF_SOURCE_ENTITY): selector.EntitySelector(
                     selector.EntitySelectorConfig()
+                ),
+                vol.Required(
+                    CONF_MODE, default=MODE_STATE_NOT_EQUAL
+                ): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=[
+                            {"value": m, "label": m} for m in MODES
+                        ],
+                        mode=selector.SelectSelectorMode.DROPDOWN,
+                        translation_key="mode",
+                    )
+                ),
+                vol.Optional(
+                    CONF_TARGET_VALUE, default=""
+                ): selector.TextSelector(
+                    selector.TextSelectorConfig(type=selector.TextSelectorType.TEXT)
                 ),
                 vol.Optional(
                     CONF_DEVICE_CLASS, default=DEVICE_CLASS_NONE
@@ -106,8 +133,13 @@ class InvertHelperOptionsFlow(config_entries.OptionsFlow):
 
         if user_input is not None:
             source_entity = user_input.get(CONF_SOURCE_ENTITY)
+            mode = user_input.get(CONF_MODE, MODE_STATE_NOT_EQUAL)
+            target_value = user_input.get(CONF_TARGET_VALUE, "").strip()
+
             if not source_entity:
                 errors[CONF_SOURCE_ENTITY] = "empty_source"
+            if mode != MODE_INVERT_BOOLEAN and not target_value:
+                errors[CONF_TARGET_VALUE] = "empty_target_value"
 
             if not errors:
                 return self.async_create_entry(title="", data=user_input)
@@ -118,6 +150,24 @@ class InvertHelperOptionsFlow(config_entries.OptionsFlow):
                     CONF_SOURCE_ENTITY,
                     default=current_data.get(CONF_SOURCE_ENTITY, ""),
                 ): selector.EntitySelector(selector.EntitySelectorConfig()),
+                vol.Required(
+                    CONF_MODE,
+                    default=current_data.get(CONF_MODE, MODE_STATE_NOT_EQUAL),
+                ): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=[
+                            {"value": m, "label": m} for m in MODES
+                        ],
+                        mode=selector.SelectSelectorMode.DROPDOWN,
+                        translation_key="mode",
+                    )
+                ),
+                vol.Optional(
+                    CONF_TARGET_VALUE,
+                    default=current_data.get(CONF_TARGET_VALUE, ""),
+                ): selector.TextSelector(
+                    selector.TextSelectorConfig(type=selector.TextSelectorType.TEXT)
+                ),
                 vol.Optional(
                     CONF_DEVICE_CLASS,
                     default=current_data.get(CONF_DEVICE_CLASS, DEVICE_CLASS_NONE),

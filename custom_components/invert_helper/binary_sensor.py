@@ -1,4 +1,4 @@
-"""Binary sensor platform for Invert / Not-True Helper integration."""
+"""Binary sensor platform for Invert / Not-True Helper."""
 from __future__ import annotations
 
 import logging
@@ -11,8 +11,6 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_NAME,
-    STATE_OFF,
-    STATE_ON,
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
 )
@@ -22,44 +20,27 @@ from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import (
     ATTR_INVERTED,
+    ATTR_MODE,
     ATTR_SOURCE_ENTITY,
     ATTR_SOURCE_STATE,
+    ATTR_TARGET_VALUE,
     CONF_DEVICE_CLASS,
     CONF_ICON,
+    CONF_MODE,
     CONF_SOURCE_ENTITY,
+    CONF_TARGET_VALUE,
+    DEFAULT_NAME,
     DEVICE_CLASS_NONE,
+    MODE_INVERT_BOOLEAN,
+    MODE_NUMERIC_NOT_EQUAL,
+    MODE_STATE_NOT_EQUAL,
+    MODE_STATE_NOT_IN,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
-STATE_ON_SET = {
-    STATE_ON,
-    "open",
-    "locked",
-    "home",
-    "active",
-    "true",
-    "yes",
-    "1",
-    "problem",
-    "detected",
-    "unsafe",
-}
-
-STATE_OFF_SET = {
-    STATE_OFF,
-    "closed",
-    "unlocked",
-    "not_home",
-    "inactive",
-    "false",
-    "no",
-    "0",
-    "ok",
-    "idle",
-    "clear",
-    "safe",
-}
+TRUTHY_STATES = {"on", "true", "1", "open", "locked", "home", "active", "problem"}
+FALSY_STATES = {"off", "false", "0", "closed", "unlocked", "not_home", "inactive", "idle"}
 
 
 async def async_setup_entry(
@@ -67,73 +48,58 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Invert / Not-True Helper binary sensor."""
-    async_add_entities([InvertHelperBinarySensor(entry)], True)
+    """Set up Invert / Not-True binary sensor from config entry."""
+    async_add_entities([InvertBinarySensor(entry)], True)
 
 
-class InvertHelperBinarySensor(BinarySensorEntity):
-    """Binary sensor representing an inverted source entity state."""
+class InvertBinarySensor(BinarySensorEntity):
+    """Representation of an Invert / Not-True Binary Sensor."""
 
-    _attr_has_entity_name = True
     _attr_should_poll = False
+    _attr_has_entity_name = True
 
     def __init__(self, entry: ConfigEntry) -> None:
         """Initialize the sensor."""
         self._entry = entry
-        self._entry_id = entry.entry_id
-
         config = {**entry.data, **entry.options}
-        self._source_entity: str = config[CONF_SOURCE_ENTITY]
-        self._custom_icon: str | None = config.get(CONF_ICON) or None
-        self._configured_device_class: str = config.get(
-            CONF_DEVICE_CLASS, DEVICE_CLASS_NONE
-        )
 
-        name = config.get(CONF_NAME) or entry.title
-        self._attr_name = name
-        self._attr_unique_id = f"{self._entry_id}_invert_helper"
+        self._source_entity: str = config.get(CONF_SOURCE_ENTITY, "")
+        self._mode: str = config.get(CONF_MODE, MODE_STATE_NOT_EQUAL)
+        self._target_value: str = config.get(CONF_TARGET_VALUE, "")
+        device_class = config.get(CONF_DEVICE_CLASS, DEVICE_CLASS_NONE)
+        icon = config.get(CONF_ICON)
 
-        # Apply device class if configured
-        if (
-            self._configured_device_class
-            and self._configured_device_class != DEVICE_CLASS_NONE
-        ):
+        self._attr_name = config.get(CONF_NAME, DEFAULT_NAME)
+        self._attr_unique_id = f"{entry.entry_id}_invert"
+
+        if device_class and device_class != DEVICE_CLASS_NONE:
             try:
-                self._attr_device_class = BinarySensorDeviceClass(
-                    self._configured_device_class
-                )
+                self._attr_device_class = BinarySensorDeviceClass(device_class)
             except ValueError:
                 self._attr_device_class = None
         else:
             self._attr_device_class = None
 
-        if self._custom_icon:
-            self._attr_icon = self._custom_icon
+        if icon:
+            self._attr_icon = icon
 
+        self._source_state_str: str | None = None
         self._attr_is_on: bool | None = None
         self._attr_available: bool = True
-        self._source_state_val: str | None = None
-
-    @property
-    def icon(self) -> str | None:
-        """Return custom icon or default."""
-        if self._custom_icon:
-            return self._custom_icon
-        return super().icon
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Return the state attributes."""
+        """Return entity specific state attributes."""
         return {
             ATTR_SOURCE_ENTITY: self._source_entity,
-            ATTR_SOURCE_STATE: self._source_state_val,
-            ATTR_INVERTED: True,
+            ATTR_SOURCE_STATE: self._source_state_str,
+            ATTR_MODE: self._mode,
+            ATTR_TARGET_VALUE: self._target_value,
+            ATTR_INVERTED: self._attr_is_on,
         }
 
     async def async_added_to_hass(self) -> None:
-        """Register listeners and evaluate state on startup."""
-        await super().async_added_to_hass()
-
+        """Register state listener when added to hass."""
         self.async_on_remove(
             async_track_state_change_event(
                 self.hass,
@@ -141,50 +107,66 @@ class InvertHelperBinarySensor(BinarySensorEntity):
                 self._async_source_state_changed,
             )
         )
-
-        # Initial evaluation
         self._evaluate_source_state()
 
     @callback
     def _async_source_state_changed(self, event: Event) -> None:
-        """Handle source entity state changes."""
+        """Handle state change of source entity."""
         self._evaluate_source_state()
         self.async_write_ha_state()
 
+    @callback
     def _evaluate_source_state(self) -> None:
-        """Evaluate and invert source entity state."""
+        """Evaluate inverted / not-true logic from current source state."""
         source_state = self.hass.states.get(self._source_entity)
 
-        if source_state is None:
+        if source_state is None or source_state.state in (
+            STATE_UNAVAILABLE,
+            STATE_UNKNOWN,
+        ):
             self._attr_available = False
             self._attr_is_on = None
-            self._source_state_val = None
-            return
-
-        state_str = source_state.state
-
-        if state_str in (STATE_UNAVAILABLE, STATE_UNKNOWN):
-            self._attr_available = False
-            self._attr_is_on = None
-            self._source_state_val = state_str
+            self._source_state_str = None if source_state is None else source_state.state
             return
 
         self._attr_available = True
-        self._source_state_val = state_str
-        clean_state = state_str.lower().strip()
+        raw_state = source_state.state
+        self._source_state_str = raw_state
+        state_clean = raw_state.strip().lower()
 
-        # Inversion logic:
-        # If source is in ON set -> Invert to False
-        # If source is in OFF set -> Invert to True
-        if clean_state in STATE_ON_SET:
-            self._attr_is_on = False
-        elif clean_state in STATE_OFF_SET:
-            self._attr_is_on = True
-        else:
-            # Numeric evaluation fallback: 0 is False (inverted -> True), >0 is True (inverted -> False)
+        if self._mode == MODE_STATE_NOT_EQUAL:
+            target_clean = self._target_value.strip().lower()
+            self._attr_is_on = state_clean != target_clean
+
+        elif self._mode == MODE_NUMERIC_NOT_EQUAL:
             try:
-                numeric_val = float(clean_state)
-                self._attr_is_on = numeric_val == 0
+                source_num = float(raw_state)
+                target_num = float(self._target_value.strip())
+                self._attr_is_on = abs(source_num - target_num) > 1e-6
             except (ValueError, TypeError):
-                # Generic fallback: truthy non-empty string inverts to False
+                # Fallback to string inequality if non-numeric
+                self._attr_is_on = raw_state.strip() != self._target_value.strip()
+
+        elif self._mode == MODE_STATE_NOT_IN:
+            target_list = [
+                v.strip().lower()
+                for v in self._target_value.split(",")
+                if v.strip()
+            ]
+            self._attr_is_on = state_clean not in target_list
+
+        elif self._mode == MODE_INVERT_BOOLEAN:
+            if state_clean in TRUTHY_STATES:
                 self._attr_is_on = False
+            elif state_clean in FALSY_STATES:
+                self._attr_is_on = True
+            else:
+                try:
+                    num_val = float(raw_state)
+                    self._attr_is_on = num_val == 0
+                except (ValueError, TypeError):
+                    self._attr_is_on = not bool(raw_state)
+
+        else:
+            # Default fallback to state inequality
+            self._attr_is_on = state_clean != self._target_value.strip().lower()

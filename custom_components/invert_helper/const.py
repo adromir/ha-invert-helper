@@ -4,13 +4,29 @@ from __future__ import annotations
 DOMAIN = "invert_helper"
 
 CONF_SOURCE_ENTITY = "source_entity"
+CONF_MODE = "mode"
+CONF_TARGET_VALUE = "target_value"
 CONF_DEVICE_CLASS = "device_class"
 CONF_ICON = "icon"
 
-DEFAULT_NAME = "Inverted Sensor"
+DEFAULT_NAME = "Not-True Helper"
+
+MODE_STATE_NOT_EQUAL = "state_not_equal"
+MODE_NUMERIC_NOT_EQUAL = "numeric_not_equal"
+MODE_STATE_NOT_IN = "state_not_in"
+MODE_INVERT_BOOLEAN = "invert_boolean"
+
+MODES = [
+    MODE_STATE_NOT_EQUAL,
+    MODE_NUMERIC_NOT_EQUAL,
+    MODE_STATE_NOT_IN,
+    MODE_INVERT_BOOLEAN,
+]
 
 ATTR_SOURCE_ENTITY = "source_entity"
 ATTR_SOURCE_STATE = "source_state"
+ATTR_MODE = "mode"
+ATTR_TARGET_VALUE = "target_value"
 ATTR_INVERTED = "inverted"
 
 DEVICE_CLASS_NONE = "none"

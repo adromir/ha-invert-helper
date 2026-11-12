@@ -3,34 +3,56 @@
     "step": {
       "user": {
         "title": "Create Invert / Not-True Helper",
-        "description": "Create a binary sensor that reflects the inverted state of any target entity (turns ON when target is OFF, and OFF when target is ON).",
+        "description": "Create a helper binary sensor that tests whether a state or number is NOT equal to a target value, or inverts a boolean.",
         "data": {
           "name": "Name",
           "source_entity": "Target Entity",
+          "mode": "Comparison Mode",
+          "target_value": "Target Value(s)",
           "device_class": "Device Class",
           "icon": "Icon (optional)"
+        },
+        "data_description": {
+          "target_value": "For 'State is NOT equal' or 'Number is NOT equal', enter a single value (e.g. 0, disarmed, home). For 'State is NOT in list', separate values by comma (e.g. home, work)."
         }
       }
     },
     "error": {
-      "empty_source": "Please select a target entity to invert.",
-      "empty_name": "Please provide a name."
+      "empty_source": "Please select a target entity.",
+      "empty_name": "Please provide a name.",
+      "empty_target_value": "Please enter a target comparison value for this mode."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Configure Invert Helper",
-        "description": "Adjust the target entity or appearance of this invert helper.",
+        "title": "Configure Invert / Not-True Helper",
+        "description": "Adjust comparison settings, target value, or appearance.",
         "data": {
           "source_entity": "Target Entity",
+          "mode": "Comparison Mode",
+          "target_value": "Target Value(s)",
           "device_class": "Device Class",
           "icon": "Icon (optional)"
+        },
+        "data_description": {
+          "target_value": "For 'State is NOT equal' or 'Number is NOT equal', enter a single value (e.g. 0, disarmed, home). For 'State is NOT in list', separate values by comma (e.g. home, work)."
         }
       }
     },
     "error": {
-      "empty_source": "Please select a target entity to invert."
+      "empty_source": "Please select a target entity.",
+      "empty_target_value": "Please enter a target comparison value for this mode."
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "state_not_equal": "State is NOT equal to [Value]",
+        "numeric_not_equal": "Number is NOT equal to [Value]",
+        "state_not_in": "State is NOT in list [Comma-separated]",
+        "invert_boolean": "Invert Boolean / Binary State"
+      }
     }
   }
 }
