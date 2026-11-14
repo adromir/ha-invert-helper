@@ -1,0 +1,65 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "invert_helper": {
+        "name": "Pembantu Inversi"
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Buat Pembantu Inversi / Tidak-Benar",
+        "description": "Buat sensor biner pembantu yang menguji apakah status atau angka TIDAK sama dengan nilai target, atau membalikkan boolean.",
+        "data": {
+          "name": "Nama",
+          "source_entity": "Entitas Target",
+          "mode": "Mode Perbandingan",
+          "target_value": "Nilai Target",
+          "device_class": "Kelas Perangkat",
+          "icon": "Ikon (opsional)"
+        },
+        "data_description": {
+          "target_value": "Untuk 'Status TIDAK sama' atau 'Angka TIDAK sama', masukkan satu nilai (mis. 0, disarmed, home). Untuk 'Status TIDAK ada dalam daftar', pisahkan nilai dengan koma (mis. home, work)."
+        }
+      }
+    },
+    "error": {
+      "empty_source": "Silakan pilih entitas target.",
+      "empty_name": "Silakan masukkan nama.",
+      "empty_target_value": "Silakan masukkan nilai perbandingan target untuk mode ini."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Konfigurasi Pembantu Inversi / Tidak-Benar",
+        "description": "Sesuaikan pengaturan perbandingan, nilai target, atau tampilan.",
+        "data": {
+          "source_entity": "Entitas Target",
+          "mode": "Mode Perbandingan",
+          "target_value": "Nilai Target",
+          "device_class": "Kelas Perangkat",
+          "icon": "Ikon (opsional)"
+        },
+        "data_description": {
+          "target_value": "Untuk 'Status TIDAK sama' atau 'Angka TIDAK sama', masukkan satu nilai (mis. 0, disarmed, home). Untuk 'Status TIDAK ada dalam daftar', pisahkan nilai dengan koma (mis. home, work)."
+        }
+      }
+    },
+    "error": {
+      "empty_source": "Silakan pilih entitas target.",
+      "empty_target_value": "Silakan masukkan nilai perbandingan target untuk mode ini."
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "state_not_equal": "Status TIDAK sama (!=)",
+        "boolean_invert": "Balikkan Boolean (Aktif -> Tidak Aktif)",
+        "number_not_equal": "Angka TIDAK sama (!=)",
+        "state_not_in_list": "Status TIDAK ada dalam daftar"
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<svg width="1024" height="320" viewBox="0 0 1024 320" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(24, -16) scale(0.68)">
+    <g fill="#1e293b" stroke="#1e293b" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Opposing Invert Arrows -->
+    <!-- Down Arrow Left -->
+    <line x1="180" y1="120" x2="180" y2="380" stroke-width="26" />
+    <polyline points="130,330 180,386 230,330" fill="none" stroke-width="26" />
+    <!-- Up Arrow Right -->
+    <line x1="332" y1="392" x2="332" y2="132" stroke-width="26" />
+    <polyline points="282,182 332,126 382,182" fill="none" stroke-width="26" />
+  </g>
+  </g>
+  <g transform="translate(370, 96)">
+    <text x="0" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#0f172a" letter-spacing="-1">
+      Invert <tspan fill="#0284c7">Helper</tspan>
+    </text>
+    <text x="0" y="102" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="500" fill="#64748b" letter-spacing="0.5">
+      Boolean &amp; Numeric Inversion Helper
+    </text>
+  </g>
+</svg>

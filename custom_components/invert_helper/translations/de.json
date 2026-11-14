@@ -1,4 +1,11 @@
 {
+  "entity": {
+    "binary_sensor": {
+      "invert_helper": {
+        "name": "Invertierungs-Helfer"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {

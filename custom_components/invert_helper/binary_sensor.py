@@ -57,6 +57,7 @@ class InvertBinarySensor(BinarySensorEntity):
 
     _attr_should_poll = False
     _attr_has_entity_name = True
+    _attr_translation_key = "invert_helper"
 
     def __init__(self, entry: ConfigEntry) -> None:
         """Initialize the sensor."""
@@ -69,7 +70,11 @@ class InvertBinarySensor(BinarySensorEntity):
         device_class = config.get(CONF_DEVICE_CLASS, DEVICE_CLASS_NONE)
         icon = config.get(CONF_ICON)
 
-        self._attr_name = config.get(CONF_NAME, DEFAULT_NAME)
+        custom_name = config.get(CONF_NAME)
+        if custom_name and custom_name not in (DEFAULT_NAME, "Invert Helper", "Invertierungs-Helfer", "Pembantu Inversi"):
+            self._attr_name = custom_name
+        else:
+            self._attr_name = None
         self._attr_unique_id = f"{entry.entry_id}_invert"
 
         if device_class and device_class != DEVICE_CLASS_NONE:
