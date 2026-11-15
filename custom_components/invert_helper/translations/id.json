@@ -1,4 +1,5 @@
 {
+  "title": "Pembantu Inversi",
   "entity": {
     "binary_sensor": {
       "invert_helper": {

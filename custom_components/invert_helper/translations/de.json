@@ -1,4 +1,5 @@
 {
+  "title": "Invertierungs-Helfer",
   "entity": {
     "binary_sensor": {
       "invert_helper": {
