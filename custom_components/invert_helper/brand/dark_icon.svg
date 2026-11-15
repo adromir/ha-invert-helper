@@ -1,6 +1,11 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <g fill="#f8fafc" stroke="#f8fafc" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Opposing Invert Arrows -->
+  <style>
+    :root {
+      color: var(--primary-color, #03a9f4);
+    }
+  </style>
+  <g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+<!-- Opposing Invert Arrows -->
     <!-- Down Arrow Left -->
     <line x1="180" y1="120" x2="180" y2="380" stroke-width="26" />
     <polyline points="130,330 180,386 230,330" fill="none" stroke-width="26" />

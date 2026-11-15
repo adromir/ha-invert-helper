@@ -15,6 +15,17 @@ The **Invert / Not-True Helper** exposes a clean `binary_sensor` that turns **ON
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/adromir/ha-invert-helper/main/Screenshots/invert-helper-config.png" alt="Invert Helper Configuration Dialog" width="800">
+</p>
+<p align="center">
+  <em>Configuration dialog: invert any binary sensor, state entity, or numeric sensor, choose comparison mode (Not Equal, Not In List, Not In Range), and configure invert behaviors with zero YAML.</em>
+</p>
+
+---
+
 ## 🎯 Why You Need This
 
 ### The Problem in Home Assistant Today
